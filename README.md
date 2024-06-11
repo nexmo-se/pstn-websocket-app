@@ -105,7 +105,7 @@ Application automatically terminates PSTN 2 leg call setup in progress (e.g. in 
 
 See corresponding diagram first-pstn-call-is-inbound.png
 
-Step a1 - Answer incoming PSTN A call, drop that leg into unique named conference (NCCO with action conversation)
+Step a1 - Answer incoming PSTN A call, drop that leg into a unique named conference (NCCO with action conversation)
 
 Step a2 - Establish WebSocket A leg, once answered drop that leg into same named conference (NCCO with action conversation)
 
