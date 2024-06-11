@@ -55,7 +55,7 @@ npm install
 
 Launch the application:<br>
 ```bash
-node pstn-websocket
+node pstn-websocket-app
 ```
 
 Default local (not public!) of this application server `port` is: 8000.
