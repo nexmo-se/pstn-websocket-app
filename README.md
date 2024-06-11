@@ -9,7 +9,7 @@ First set up the basic middleware server from https://github.com/nexmo-se/websoc
 
 Default local (not public!) of that middleware server `port` is: 6000.
 
-If you plan to test using `Local deployment` with ngrok (Internet tunneling service) for both the Dialogflow reference connection code and this sample application, you may set up [multiple ngrok tunnels](https://ngrok.com/docs#multiple-tunnels).
+If you plan to test using `Local deployment` with ngrok (Internet tunneling service) for both the Dialogflow reference connection code and this sample application, you may set up [multiple ngrok tunnels](https://ngrok.com/docs/agent/config/#tunnel-configurations).
 
 For the next steps, you will need:
 - That middleware public hostname and if necessary public port,</br>
