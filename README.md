@@ -3,7 +3,7 @@
 
 ## Set up
 
-## Set up the sample basic middleware server - Host server public hostname and port
+### Set up the sample basic middleware server - Host server public hostname and port
 
 First set up the basic middleware server from https://github.com/nexmo-se/websocket-server.
 
