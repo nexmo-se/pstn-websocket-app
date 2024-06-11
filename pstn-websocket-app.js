@@ -104,7 +104,7 @@ app.get('/startcall', async(req, res) => {
     
     console.log('>>> websocket URI:', wsUri);
 
-    // -- create first the WebSocket leg
+    // -- create first the WebSocket leg --
     // -- step 1a <<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     vonage.voice.createOutboundCall({
@@ -115,7 +115,7 @@ app.get('/startcall', async(req, res) => {
         headers: {  // set your desired custom data here
           pstn_caller_number: servicePhoneNumber,
           pstn_callee_number: calleeNumber,
-          pstn_call_direction: "outbound",
+          pstn_call_direction: 'outbound',
           some_id: someId
         }
       }],
@@ -138,7 +138,6 @@ app.get('/startcall', async(req, res) => {
 
 app.get('/ws_answer_1', async(req, res) => {
 
-    //-- step 1b below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     const nccoResponse = [
       {
         "action": "conversation",
@@ -176,8 +175,8 @@ app.post('/ws_event_1', async(req, res) => {
   
   if (req.body.type == 'transfer') {  // This is when the named conference is fully created (by the first leg)
 
-    //-- step 1c below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    //-- call PSTN callee
+    //-- call PSTN 1 callee --
+    //-- step 1b below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     console.log('>>> calling PSTN callee leg 1');
     const calleeNumber = req.query.callee_number;
@@ -244,8 +243,6 @@ app.get('/answer_1', async(req, res) => {
 
   const ws1Uuid = req.query.original_uuid;
   const pstn1Uuid = req.query.uuid;
-
-  //-- step 1d below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   const nccoResponse = [
     {
@@ -314,13 +311,12 @@ app.get('/answer_1', async(req, res) => {
 
   setTimeout(() => {
 
-    console.log('>>> calling PSTN callee leg 2');
-
     vonage.voice.getCall(pstn1Uuid)
       .then(res => {
         if (res.status == 'answered') { // is PSTN leg A still up?
 
-          console.log('>>> call pstn 2');
+          console.log('>>> calling PSTN callee leg 2');
+          //-- step 2a below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
           vonage.voice.createOutboundCall({
             to: [{
@@ -354,9 +350,10 @@ app.get('/answer_1', async(req, res) => {
 
   setTimeout(() => {
 
-    console.log('>>> end WebSocket 1');
-
     app.set('pstn2_from_ws1_' + ws1Uuid, true); // will prevent from hanging up PSTN 1 when WebSocket is effectively terminated
+
+    console.log('>>> end WebSocket 1', ws1Uuid);
+    //-- step 1c below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     vonage.voice.hangupCall(ws1Uuid)
       .then(res => console.log(">>> WebSocket 1 leg terminated", ws1Uuid))
@@ -520,8 +517,7 @@ app.post('/event_2', async(req, res) => {
 
 //============= Processing inbound PSTN calls ===============
 
-// incoming PSTN call A
-
+//-- incoming PSTN A call --
 //-- step a1 below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 app.get('/answer', async(req, res) => {
 
@@ -572,6 +568,7 @@ app.post('/event', async(req, res) => {
 
   if (req.body.type == 'transfer') {
 
+    //-- create WebSocket A --
     //-- step a2 below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     // in actual use case, the following parameter
@@ -581,7 +578,6 @@ app.post('/event', async(req, res) => {
     // WebSocket connection
     const wsUri = 'wss://' + processorServer + '/socket';
 
-    // create WebSocket A
     vonage.voice.createOutboundCall({
       to: [{
         type: 'websocket',
@@ -670,7 +666,6 @@ app.get('/ws_answer_a', async(req, res) => {
   const pstnAUuid = req.query.original_uuid;
   const wsAUuid = req.query.uuid;
 
-  //-- step a3 below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   const nccoResponse = [
     {
       "action": "conversation",
@@ -685,7 +680,6 @@ app.get('/ws_answer_a', async(req, res) => {
 
   res.status(200).json(nccoResponse);
 
-  //-- step ax below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   //-- All following "setTimeout" are just to trigger and simulate a call transfer to another line (second PSTN leg)
   //-- In actual usage, your application would trigger the transfer if needed after interaction from the first
@@ -737,13 +731,15 @@ app.get('/ws_answer_a', async(req, res) => {
   }, Number(simulatedDelay) + Number(5000) );   
 
   //-- place outbound PSTN call leg B --
+
   setTimeout(() => {
 
     vonage.voice.getCall(pstnAUuid)
       .then(res => {
         if (res.status == 'answered') { // is PSTN leg A still up?
 
-          console.log('>>> call pstn B');
+          console.log('>>> call pstn leg B');
+          //-- step b1 below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
           vonage.voice.createOutboundCall({
             to: [{
@@ -777,6 +773,7 @@ app.get('/ws_answer_a', async(req, res) => {
   setTimeout(() => {
 
     console.log('>>> end WebSocket A');
+    //-- step a3 below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     vonage.voice.getCall(wsAUuid)
       .then(res => {
@@ -874,7 +871,6 @@ app.post('/ws_event_a', async(req, res) => {
 
 app.get('/answer_b', async(req, res) => {
 
-  //-- step ay below <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   const nccoResponse = [
     {
       "action": "conversation",

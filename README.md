@@ -34,7 +34,7 @@ https://yyyyyyyy.ngrok.io/event</br>
 **IMPORTANT**: Do not forget to click on [Save changes] at the bottom of the screen if you have created a new key set.</br>
 - Link a phone number to this application if none has been linked to the application.
 
-Please take note of your **application ID** and the **linked phone number** (as they are needed in the very next section.)
+Please take note of your **application ID** and the **linked phone number** (as they are needed in the very next section).
 
 For the next steps, you will need:</br>
 - Your [Vonage API key](https://dashboard.nexmo.com/settings) (as **`API_KEY`**)</br>
@@ -77,20 +77,21 @@ https://xxxx.ngrok.io/startcall?callee=12995551212
 To make sure the WebSocket hears the inbound audio on the outbound PSTN call from the very beginning, in the call flow, the WebSocket is established first, then the outbound PSTN call.
 
 
-Step 1a - Establish WebSocket 1, once answered by the middleware, drop that leg into a unique named conference (NCCO with action conversation)
+Step 1a - Establish WebSocket 1, once answered by the middleware, drop that leg into a unique named conference (NCCO with action conversation),
 
-Step 1b - Place outbound PSTN 1 call, once answered by remote party, drop that leg into same named conference (NCCO with action conversation)
+Step 1b - Place outbound PSTN 1 call, once answered by remote party, drop that leg into same named conference (NCCO with action conversation),
 
 
-If the voice API application decides to transfer PSTN 1 party with another party, identified as PSTN 2 party, then execute following steps
+If the voice API application decides to transfer PSTN 1 party with another party, identified as PSTN 2 party, then execute following steps.
 
-Step 1c - Terminate WebSocket 1 leg,
 
-Step 2a - Place outbound PSTN 2 call, once answered by remote party, drop that leg into same named conference (NCCO with action conversation)
+Step 2a - Place outbound PSTN 2 call, once answered by remote party, drop that leg into same named conference (NCCO with action conversation),
+
+Step 1c - Terminate WebSocket 1 leg.
 
 
 Additional info:
-For testing purposes, step 1c and step 2a are trigerred in the application some time after step 1b has completed. In real deployment, your application decides when to transfer call to PSTN 2 party, if needed at all.
+For testing purposes, step 2a and step 1c are trigerred in the application some time after step 1b has completed. In real deployment, your application decides when to transfer call to PSTN 2 party, if needed at all.
 
 In step 1a, the NCCO with action conversation does not include endOnExit true flag because it may automatically terminate both PSTN calls which is an undesired behavior. Instead the application decides what to do in that case, e.g. terminate PSTN 1 leg or let proceed.
 
@@ -105,20 +106,20 @@ Application automatically terminates PSTN 2 leg call setup in progress (e.g. in 
 
 See corresponding diagram first-pstn-call-is-inbound.png
 
-Step a1 - Answer incoming PSTN A call, drop that leg into a unique named conference (NCCO with action conversation)
+Step a1 - Answer incoming PSTN A call, drop that leg into a unique named conference (NCCO with action conversation),
 
-Step a2 - Establish WebSocket A leg, once answered drop that leg into same named conference (NCCO with action conversation)
+Step a2 - Establish WebSocket A leg, once answered drop that leg into same named conference (NCCO with action conversation).
 
 
-If the voice API application decides to transfer PSTN A party with another party, identified as PSTN B party, then execute following steps
+If the voice API application decides to transfer PSTN A party with another party, identified as PSTN B party, then execute following steps.
 
-Step a3 - Terminate WebSocket A leg,
+Step b1 - Place outbound PSTN B call, once answered by remote party, drop that leg into same named conference (NCCO with action conversation),
 
-Step b1 - Place outbound PSTN B call, once answered by remote party, drop that leg into same named conference (NCCO with action conversation)
+Step a3 - Terminate WebSocket A leg.
 
 
 Additional info:
-For testing purposes, step a3 and step b1 are trigerred in the application some time after step a2 has completed. In real deployment, your application decides when to transfer call to PSTN B party, if needed at all.
+For testing purposes, step b1 and step a3 are trigerred in the application some time after step a2 has completed. In real deployment, your application decides when to transfer call to PSTN B party, if needed at all.
 
 In step a2, the NCCO with action conversation does not include endOnExit true flag because it may automatically terminate both PSTN calls which is an undesired behavior. Instead the application decides what to do in that case, e.g. terminate PSTN A leg or let proceed.
 
