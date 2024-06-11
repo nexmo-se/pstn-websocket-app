@@ -1,1 +1,1 @@
-web: node ./pstn-websocket.js
+web: node ./pstn-websocket-app.js
