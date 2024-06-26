@@ -334,7 +334,6 @@ app.get('/answer_1', async(req, res) => {
             })
             .then(res => {
               console.log(">>> outgoing PSTN 2 call status:", res);
-              app.set('pstn2_from_pstn1_' + pstn1Uuid, res.uuid);
               })
             .catch(err => console.error(">>> outgoing PSTN B call error:", err))
 
@@ -383,23 +382,7 @@ app.post('/event_1', async(req, res) => {
       .catch(err => console.error("Error play DTMF to WebSocket", ws1Uuid, err));
   }  
 
-  if (req.body.status == 'completed') {
-
-    const pstn2Uuid = app.get('pstn2_from_pstn1_' + pstn1Uuid);
-    
-    if (pstn2Uuid) {
-      vonage.voice.getCall(pstn2Uuid)
-        .then(res => {
-          if (res.status != 'completed') {
-            vonage.voice.hangupCall(pstn2Uuid)
-              .then(res => console.log(">>> PSTN 2 leg terminated", pstn2Uuid))
-              .catch(err => null) // PSTN 2 leg has already been terminated 
-          }
-         })
-        .catch(err => console.error(">>> error get call status of PSTN leg 2", pstn2Uuid, err)) 
-    };    
-
-    //--  
+  if (req.body.status == 'completed') { 
 
     app.set('pstn1_from_ws1_' + req.query.original_uuid, null); // parameter no longer needed
 
@@ -487,7 +470,7 @@ app.post('/event_2', async(req, res) => {
 
   //--
 
-  if (status == 'started' || status == 'ringing' || status == 'answered') {
+  if (status == 'ringing' || status == 'answered') {
     
     vonage.voice.getCall(pstn1Uuid)
       .then(res => {
@@ -499,7 +482,7 @@ app.post('/event_2', async(req, res) => {
         
         }
        })
-      .catch(err => console.error(">>> error get call status of PSTN leg A", pstnAUuid, err)) 
+      .catch(err => console.error(">>> error get call status of PSTN leg 2", pstnAUuid, err)) 
 
   };
 
@@ -509,7 +492,6 @@ app.post('/event_2', async(req, res) => {
   if (status == 'completed') {
 
     app.set('pstn2_from_ws1_' + ws1Uuid, null); // parameter no longer needed
-    app.set('pstn2_from_pstn1_' + pstn1Uuid, null); // parameter no longer needed
 
   };
 
@@ -624,21 +606,6 @@ app.post('/event', async(req, res) => {
           }
          })
         .catch(err => console.error(">>> error get call status of PSTN leg A", wsAUuid, err))    
-    };
-
-    //-- terminate PSTN B leg if in progress
-    const pstnBUuid = app.get('pstnb_from_pstna_' + pstnAUuid);
-
-    if (pstnBUuid) {
-      vonage.voice.getCall(pstnBUuid)
-        .then(res => {
-          if (res.status != 'completed') {
-            vonage.voice.hangupCall(pstnBUuid)
-              .then(res => console.log(">>> Terminating PSTN B leg", pstnBUuid))
-              .catch(err => null) // PSTN B leg has already been terminated
-          }
-         })
-        .catch(err => console.error(">>> error get call status of PSTN B leg", pstnBUuid, err))    
     };
 
     //--
@@ -916,7 +883,7 @@ app.post('/event_b', async(req, res) => {
 
   //--
 
-  if (status == 'started' || status == 'ringing' || status == 'answered') {
+  if (status == 'ringing' || status == 'answered') {
     
     vonage.voice.getCall(pstnAUuid)
       .then(res => {
@@ -943,7 +910,13 @@ app.post('/event_b', async(req, res) => {
 
 });
 
-//--------------  
+//--------------
+
+app.post('/rtc', async(req, res) => {
+
+  res.status(200).send('Ok');
+
+});  
 
 //--- If this application is hosted on VCR (Vonage Code Runtime) serverless infrastructure (aka Neru) --------
 
